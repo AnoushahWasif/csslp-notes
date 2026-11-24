@@ -47,6 +47,28 @@ def esc(text: str) -> str:
     return text.replace("<", "&lt;")
 
 
+# The tracker's grading notes were written by the tutor about me ("User chose A", "You said X").
+# These notes are mine, so they read in first person.
+FIRST_PERSON = [
+    (r"\bUser:\s*", "My answer: "),
+    (r"\bUser (said|chose|named|wrote|picked|answered)\b", r"I \1"),
+    (r"\bSkipped by user\b", "Skipped"),
+    (r"\bYou (said|chose|named|wrote|picked|answered)\b", r"I \1"),
+    (r"\(you got this\)", "(got this)"),
+    (r"^(Said|Answered|Named|Wavered|Did not|First said)\b", r"I \1"),
+]
+
+
+def first_person(text: str) -> str:
+    for pattern, repl in FIRST_PERSON:
+        text = re.sub(pattern, repl, text, flags=re.MULTILINE)
+    return re.sub(
+        r"\bI (Said|Answered|Named|Wavered|Did not|First said)\b",
+        lambda m: "I " + m.group(1)[0].lower() + m.group(1)[1:],
+        text,
+    )
+
+
 def anchor(term_id: str) -> str:
     return "t-" + term_id.replace(".", "-").lower()
 
@@ -56,7 +78,7 @@ def lesson_date(raw: str, year: int):
     try:
         return (
             dt.datetime.strptime(f"{raw} {year}", "%b %d %Y")
-            .replace(tzinfo=dt.timezone.utc)
+            .replace(tzinfo=dt.UTC)
             .date()
         )
     except (TypeError, ValueError):
@@ -66,7 +88,7 @@ def lesson_date(raw: str, year: int):
 def lesson_md(body: str) -> str:
     out = []
     for line in body.strip().splitlines():
-        line = esc(line.rstrip())
+        line = esc(first_person(line.rstrip()))
         if not line:
             continue
         if line.startswith("#"):
@@ -96,7 +118,7 @@ def build(data_dir: Path, out: Path, year: int | None) -> dict:
         updated = progress_raw.get("updated")
         if not updated:
             sys.exit("lesson dates have no year; pass --year")
-        year = dt.datetime.fromtimestamp(updated / 1000, tz=dt.timezone.utc).year
+        year = dt.datetime.fromtimestamp(updated / 1000, tz=dt.UTC).year
 
     for sub in ("domains", "log"):
         shutil.rmtree(out / sub, ignore_errors=True)
@@ -156,7 +178,10 @@ def build(data_dir: Path, out: Path, year: int | None) -> dict:
                     if lesson.get("check"):
                         lines += [f"**Quick check:** {esc(lesson['check'])}", ""]
                     if lesson.get("answer"):
-                        lines += [f"**Answer:** {esc(lesson['answer'])}", ""]
+                        lines += [
+                            f"**Answer:** {esc(first_person(lesson['answer']))}",
+                            "",
+                        ]
                     lines += ["</details>", ""]
         (out / "domains" / fname).write_text(
             "\n".join(lines).rstrip() + "\n", encoding="utf-8"
