@@ -1,6 +1,6 @@
 # Review list
 
-Terms I marked as shaky (52). Go through these before each practice test.
+Terms I marked as shaky (53). Go through these before each practice test.
 
 ## Domain 2, 2.6 Decommission applications
 
@@ -110,3 +110,7 @@ Terms I marked as shaky (52). Go through these before each practice test.
 ## Domain 7, 7.2 Configuration and version control
 
 - **[Configuration management database (CMDB)](domains/07-secure-software-deployment-operations-maintenance.md#t-7-2-4)**: Record of configuration items and relationships.
+
+## Domain 7, 7.9 Patch management
+
+- **[Emergency patching](domains/07-secure-software-deployment-operations-maintenance.md#t-7-9-2)**: Expedited process for actively exploited vulnerabilities.
