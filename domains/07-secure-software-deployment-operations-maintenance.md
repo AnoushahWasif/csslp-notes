@@ -1912,6 +1912,79 @@ Chain of trust verifying each boot stage's signature; protect key generation and
 Why: stops bootkits and rootkits. Key generation, access and management for signing keys must be protected.
 Scenario cue: 'malware modified the bootloader' → secure boot would have blocked it.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
+
 <a name="t-7-5-2"></a>
 **Least privilege installation**
 
@@ -1920,12 +1993,158 @@ Run services with minimal rights, not as admin/root.
 > On the exam: What it means: install and run services with the minimum rights needed, not as root/administrator, and remove any temporary elevated rights after installation.
 Scenario cue: 'the web service runs as SYSTEM' → violates least privilege.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
+
 <a name="t-7-5-3"></a>
 **Environment hardening**
 
 Disable unused services and ports, remove defaults, patch, firewall.
 
 > On the exam: What it is: reducing attack surface on the deployed system: remove unused services, ports and sample apps; change default credentials; apply patches; configure firewalls; follow CIS/STIG baselines.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
 
 <a name="t-7-5-4"></a>
 **Secure provisioning**
@@ -1934,6 +2153,79 @@ Deliver credentials, configs and licenses securely; use IaC.
 
 > On the exam: What it is: delivering systems with unique credentials, secure configurations and licensing, usually automated with IaC.
 Scenario cue: 'every customer device ships with the same admin password' → insecure provisioning.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
 
 <a name="t-7-5-5"></a>
 **Secure defaults**
@@ -1944,12 +2236,158 @@ Ship in the most secure configuration out of the box.
 Why: most users never change defaults.
 Scenario cue: 'debug mode enabled by default in production builds' → insecure default.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
+
 <a name="t-7-5-6"></a>
 **Minimum security baseline (MSB)**
 
 The most restrictive standard configuration that all systems must meet before going into production; supports hardening.
 
 > On the exam: Scenario cue: 'every server must meet a defined lockdown level before deployment' → MSB.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
 
 ## 7.6 Security approval to operate
 
@@ -1961,6 +2399,79 @@ Formal approval to run the system in production.
 > On the exam: What it is: formal approval from a senior official (Authorizing Official) to put the system into production after reviewing security assessment results.
 Scenario cue: 'which step comes before a federal system goes live?' → authorization (ATO).
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
+
 <a name="t-7-6-2"></a>
 **Risk acceptance and sign-off**
 
@@ -1969,6 +2480,79 @@ The right-level owner formally accepts residual risk.
 > On the exam: What it means: someone with enough authority over the business risk formally accepts the residual risk in writing.
 Trap: developers or security testers can't accept risk for the business; the owner/senior management does.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
+
 <a name="t-7-6-3"></a>
 **POA&M**
 
@@ -1976,6 +2560,79 @@ Plan of action and milestones for open issues.
 
 > On the exam: What it is: Plan of Action and Milestones, a list of known weaknesses with planned fixes, owners and deadlines, accepted at authorization time.
 Scenario cue: 'how are weaknesses not fixed before go-live tracked?' → POA&M.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.5 Secure installation (6) + 7.6 Obtain security approval to operate (3) — 9 topics**
+
+**7.5 angle: a secure system becomes insecure the moment it's installed badly — install hardened, minimal rights, from trusted sources, in its safest state.**
+
+**1. Secure boot (7.5.1)**
+
+**Chain of trust:** hardware root of trust (immutable ROM / TPM) → checks **firmware (UEFI)** signature → firmware checks **bootloader** → bootloader checks **kernel** → kernel checks **drivers**; any unsigned/tampered stage = **boot stops**. **UEFI Secure Boot** key databases: platform key, key-exchange keys, **db** (allowed) / **dbx** (revoked). Protect signing keys (HSM). **Measured boot** records hashes in the TPM for attestation. Blocks **bootkits/firmware rootkits**.
+
+*Hook: each stage checks the ID of the next one before letting it in.*
+
+**2. Least privilege installation (7.5.2)**
+
+**Dedicated service accounts**, not admin/root/SYSTEM · elevation **only during install**, then dropped · **protected directories** (users can't modify program files) · **minimal install** · limit who can install software (allow-listing).
+
+**3. Environment hardening (7.5.3)**
+
+Disable unused services/ports/protocols · remove default accounts, sample apps, **default passwords** · patch · host firewall · **CIS Benchmarks / DISA STIGs** · debug off, TLS enforced, logging on · **remove compilers/admin tools from prod**. Applies to OS, web server, DB, containers, cloud.
+
+**4. Secure provisioning (7.5.4)**
+
+**Secrets injected at runtime from a vault** (never baked into images) · configs from version control / IaC, licenses, certificates · **golden images** (pre-hardened, scanned, **signed**) · **automated** (IaC, Ansible) → repeatable · least-privilege access at provisioning + **deprovisioning**.
+
+**5. Secure defaults (7.5.5)**
+
+Ships in its **most secure configuration out of the box** — strong settings on, risky features off; admins deliberately **opt into** risk. Force password change at first login, **no default passwords** (illegal for many IoT devices in the UK, California), TLS on, debug off, minimal permissions. **Secure by default** (CISA Secure by Design) = operational side of fail-safe defaults.
+
+**6. Minimum security baseline (MSB) (7.5.6)**
+
+**Most restrictive standard configuration ALL systems must meet before production** — the organization-wide **floor**; from CIS/STIGs/policy; checked **before go-live + continuously**; deviations need **formal exceptions**. vs **baseline (7.2)** = approved config per system **type**.
+
+*Hook: the MSB is the theme-park height bar — every system must be at least this secure to ride production.*
+
+**7.6 angle: before going live, a senior official formally accepts the remaining risk, with a plan for anything still open.**
+
+**7. Authority to operate (ATO) (7.6.1)**
+
+Formal decision by the **Authorizing Official (AO)** to run in production, **explicitly accepting residual risk** — the **"Authorize" step of the NIST RMF (SP 800-37)**. Authorization package: **SSP** (system security plan) · **SAR** (security assessment report) · **POA&M**. Types: **ATO** (often time-bound, e.g. 3 years, or ongoing with continuous monitoring) · **IATO** (interim, temporary, conditions) · **DATO** (denial). **Significant change → reauthorization.**
+
+**8. Risk acceptance and sign-off (7.6.2)**
+
+Residual risk accepted by the **right-level owner** (business owner / AO) — not developers, testers, or the security team. **Documented** (risk, why, compensating controls, **expiry**), **signed**, tracked in the **risk register**. Bigger risk → higher authority.
+
+**9. POA&M (7.6.3)**
+
+**Plan of Action and Milestones:** known weaknesses/open findings with **description, resources, responsible owner, milestones, scheduled completion dates, status**. Part of the authorization package; tracked continuously; **allows an ATO despite open issues**; used by the AO + auditors.
+
+*Hook: ATO = the driving license; risk acceptance = the signature on it; POA&M = the list of repairs the car still needs, with dates.*
+
+**On the exam**
+
+- Each boot stage verifies the next from hardware → **secure boot** · web service runs as root → **least privilege installation**
+- Default admin password + sample apps → **hardening** gap · credentials baked into image → insecure **provisioning** (vault at runtime)
+- Ships with debug on + default password → violates **secure defaults** · minimum config every system must meet → **MSB**
+- Senior official approves operation, accepting residual risk → **ATO** (by the **AO**) · temporary with conditions → **IATO** · denied → **DATO**
+- Who accepts residual risk → **business owner / AO** · open findings with owners + due dates → **POA&M**
+- **Traps:** MSB = floor for all systems vs baseline per type; security advises, the business accepts.
+
+**Quick check + your answers**
+
+1. Each boot stage verifies the next stage's signature from hardware → **secure boot** ✅
+
+2. Org-wide minimum configuration floor before go-live → **MSB** ✅
+
+3. 4 medium findings open after ATO, tracked with owners + dates → **POA&M (Plan of Action and Milestones)** ✅
+
+**Quick check:** (1) Each boot stage verifies the next stage's signature from hardware: name? (2) Org-wide minimum config floor before go-live? (3) Open findings after ATO, tracked with owners + due dates?
+
+**Answer:** Secure boot; MSB; POA&M. All correct.
+
+</details>
 
 ## 7.7 Continuous monitoring
 
@@ -1987,6 +2644,123 @@ Information security continuous monitoring.
 > On the exam: What it is: Information Security Continuous Monitoring, ongoing awareness of security, vulnerabilities and threats to support risk decisions, instead of point-in-time checks.
 Scenario cue: 'the system was assessed once three years ago' → move to continuous monitoring.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-7-2"></a>
 **Observable data**
 
@@ -1995,12 +2769,246 @@ Logs, events, telemetry, traces, metrics.
 > On the exam: Types: logs (records of events), events (things that happened), telemetry (performance/health data), traces (a request's path across services), metrics (numbers over time).
 Requirements: centralize, keep clocks synced (NTP), protect integrity, retain as required.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-7-3"></a>
 **IDS vs IPS**
 
 Detects vs blocks; signature-based vs anomaly-based; host vs network.
 
 > On the exam: Signature-based misses zero-days; anomaly-based catches new attacks but has more false positives. An IPS sits inline and can block, and can also cause outages.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
 
 <a name="t-7-7-4"></a>
 **SIEM**
@@ -2010,6 +3018,123 @@ Collects and correlates logs from many sources to detect incidents.
 > On the exam: What it is: Security Information and Event Management: collects logs from many sources, normalizes and correlates them, alerts on suspicious patterns, supports investigation and compliance reporting.
 Scenario cue: 'detect an attack visible only by combining firewall, server and app logs' → SIEM correlation.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-7-5"></a>
 **SOAR**
 
@@ -2018,12 +3143,246 @@ Automates response playbooks.
 > On the exam: What it is: Security Orchestration, Automation and Response: runs automated playbooks (block an IP, disable an account, open a ticket) when alerts fire.
 Scenario cue: 'too many alerts, slow response' → SOAR automation.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-7-6"></a>
 **Regulation and privacy changes**
 
 Monitor for new laws that change requirements.
 
 > On the exam: What it means: monitor for new or changed laws and regulations that may require changes to software (e.g., new privacy rights, breach notification rules).
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
 
 <a name="t-7-7-7"></a>
 **Logging and monitoring essentials**
@@ -2033,6 +3392,123 @@ What to log: logins (success/failure), access to sensitive data, privilege chang
 > On the exam: Controls: synced time (NTP), central collection, integrity protection (append-only, hashing), retention policy, regular review with alerts.
 Scenario cue: 'attackers deleted local logs' → logs should have been forwarded to a central, protected server.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-7-8"></a>
 **Honeypots and honeytokens**
 
@@ -2040,12 +3516,246 @@ Honeypot: a decoy system to attract and study attackers. Honeynet: a network of 
 
 > On the exam: Trap: honeypots must be isolated, and enticement is fine but entrapment raises legal issues.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-7-9"></a>
 **Monitoring methods and metrics**
 
 Ways to monitor: logs and audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: incidents over time, time to detect and respond, availability, failed logins.
 
 > On the exam: Syslog is the standard protocol for sending log messages to a central server.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
 
 ## 7.8 Incident response
 
@@ -2057,12 +3767,246 @@ Confirm, classify and prioritize incidents.
 > On the exam: What it is: quickly confirming whether an event is a real incident, classifying it, assessing impact and setting priority and escalation.
 Scenario cue: 'many alerts arrive at once; what first?' → triage to focus on the most severe.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-8-2"></a>
 **Forensics**
 
 Chain of custody, order of volatility, hash evidence to prove integrity.
 
 > On the exam: Collect the most volatile evidence first (memory before disk). Don't reboot a compromised machine before capturing it.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
 
 <a name="t-7-8-3"></a>
 **Remediation**
@@ -2072,6 +4016,123 @@ Contain, eradicate the cause, recover safely.
 > On the exam: Order: containment (stop the spread, isolate systems) → eradication (remove malware, close the vulnerability) → recovery (restore from clean backups, monitor).
 Trap: containment comes before eradication.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-8-4"></a>
 **Root cause analysis**
 
@@ -2080,12 +4141,246 @@ Find the underlying cause (5 whys, fishbone) so it doesn't recur.
 > On the exam: What it is: finding the underlying reason an incident happened, not just the symptom. Methods: 5 whys, fishbone diagram.
 Scenario cue: 'the same breach keeps happening after servers are cleaned' → root cause not fixed (e.g., an unpatched flaw in the code).
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-8-5"></a>
 **Lessons learned**
 
 Post-incident review feeding improvements back into the lifecycle.
 
 > On the exam: What it is: a post-incident review of what happened, what worked and what didn't, and what to improve. Results go back into requirements, coding standards, training and the IR plan.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
 
 <a name="t-7-8-6"></a>
 **Events, alerts, incidents**
@@ -2094,6 +4389,123 @@ Event: any observable occurrence. Alert: an event flagged as possibly important.
 
 > On the exam: Scenario cue: 'one failed login' → event. 'Thousands of failed logins against many accounts' → incident.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-8-7"></a>
 **Incident vs problem management**
 
@@ -2101,12 +4513,246 @@ Incident management restores normal service as fast as possible. Problem managem
 
 > On the exam: Scenario cue: 'the service is back up, but why does it keep failing?' → problem management.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
+
 <a name="t-7-8-8"></a>
 **Incident response exercises**
 
 Tabletop exercise (discussion through a scenario), walkthrough, simulation, and full live exercises; they test the plan, roles and communication.
 
 > On the exam: Scenario cue: 'cheapest way to test the IR plan without disrupting systems' → tabletop exercise.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**7.7 Continuous monitoring (9) + 7.8 Incident response (8) — 17 topics**
+
+*Together: watch the system (7.7), then respond when something happens (7.8).*
+
+**7.7 angle: you can't respond to what you don't see — what to watch, with which tools, how to measure it.**
+
+**1. ISCM (NIST SP 800-137) (7.7.1)**
+
+Information Security Continuous Monitoring: ongoing awareness of security status, vulnerabilities, threats → risk decisions. Six steps: **Define** strategy → **Establish** program (metrics, frequencies) → **Implement** (collect) → **Analyze + report** → **Respond** → **Review + update**. Enables **ongoing ATO** (7.6).
+
+**2. Observable data (7.7.2)**
+
+**Logs** (event records) · **metrics** (numbers over time) · **traces** (a request's path across services) · events/**telemetry** (umbrella). Logs + metrics + traces = three pillars of observability; collect centrally.
+
+**3. IDS vs IPS (7.7.3)**
+
+**IDS** detects + alerts (passive, watches a copy). **IPS** inline, **blocks** (active; false positives block legit traffic; fail open or closed?). **Signature-based** (known patterns, misses zero-days) vs **anomaly/behavior-based** (deviations from baseline, catches new, more FPs). **HIDS** (host: files, logs, processes, sees decrypted data) vs **NIDS** (network traffic, can't see inside encrypted payloads).
+
+*Hook: IDS = a smoke alarm (it shouts); IPS = a sprinkler (it acts).*
+
+**4. SIEM (7.7.4)**
+
+Collects logs from many sources, **normalizes**, **correlates across sources** (failed logins + new admin + big export = one alert), dashboards, alerting, **retention** for forensics/compliance. Needs tuning (alert fatigue) + time-synced sources.
+
+**5. SOAR (7.7.5)**
+
+Security Orchestration, Automation and Response: **automates playbooks** via tool APIs (phishing alert → pull email, check URL, quarantine, block sender, ticket). Faster, consistent; human approval for drastic steps.
+
+*Hook: SIEM spots it; SOAR handles it.*
+
+**6. Regulation and privacy changes (7.7.6)**
+
+Monitor new/changed laws (privacy laws, EU AI Act phases, breach notification) + contract changes → legal/compliance feeds requirements + controls.
+
+**7. Logging and monitoring essentials (7.7.7)**
+
+Log: logins (success + failure), sensitive-data access, **privilege changes**, **admin actions**, security errors (who/what/when/where/outcome). Never log passwords, keys, full card numbers, unneeded PII. Central, tamper-protected, time-synced.
+
+**8. Honeypots and honeytokens (7.7.8)**
+
+**Honeypot** = decoy system to attract/study attackers; **honeynet** = network of them; **honeytoken** = fake data (credentials, records) that **alerts when used** — near-zero false positives (canary tokens). Isolate honeypots. **Enticement** (passive, OK) vs **entrapment** (inducing a crime, not OK).
+
+*Hook: honeypot = a fake house to watch burglars; honeytoken = a fake banknote with a tracker.*
+
+**9. Monitoring methods and metrics (7.7.9)**
+
+Methods: logs/audits, IDS/IPS, SIEM, performance monitoring, synthetic transactions. Metrics: **MTTD** (detect), **MTTR** (respond/recover), incidents over time, availability %, failed logins, patch compliance %, vulns past SLA.
+
+**7.8 angle: classify it, protect the evidence, fix it properly, learn from it.**
+
+**NIST SP 800-61 phases:** Preparation → Detection + analysis → Containment, eradication + recovery → Post-incident activity (lessons learned).
+
+**10. Events, alerts, incidents (7.8.6)**
+
+**Event** = anything observable · **alert** = event flagged as possibly important · **incident** = harms/threatens C/I/A or breaks policy.
+
+*Hook: every incident is an event, but most events are just noise.*
+
+**11. Incident triage (7.8.1)**
+
+**Confirm** (not a false positive) → **classify** (malware, breach, DoS, insider) → **prioritize** by impact (business disruption, data involved, recoverability) → **assign/escalate**, communicate.
+
+**12. Forensics (7.8.2)**
+
+**Chain of custody** (unbroken record of who handled evidence, when, why — else inadmissible). **Order of volatility:** CPU registers/cache → **RAM** → network state + running processes → disk → logs/backups/archives. **Hash evidence** (SHA-256) at collection, re-verify. **Work on forensic copies** (bit-for-bit, **write blockers**). Don't power off before capturing RAM.
+
+*Hook: collect what's in the air (CPU, RAM) before what's on paper (disk, logs).*
+
+**13. Remediation (7.8.3)**
+
+**Containment** (isolate, short- then long-term, preserve evidence) → **eradication** (remove malware, close the vuln, **reset credentials**) → **recovery** (clean backups, patch, return to service, monitor for reinfection).
+
+**14. Root cause analysis (7.8.4)**
+
+Underlying cause, not the symptom: **5 whys**, **fishbone (Ishikawa)** (people, process, technology, environment). Blameless.
+
+**15. Lessons learned (7.8.5)**
+
+Post-incident review soon after (~2 weeks): timeline, went well/badly, improvements → update IR plan, controls, training, **requirements + threat models** (back into the SDLC).
+
+**16. Incident vs problem management (7.8.7)**
+
+**Incident management** = restore normal service fast. **Problem management** = find + remove the root cause so incidents stop recurring (ITIL).
+
+*Hook: incident management puts out the fire; problem management finds out why fires keep starting.*
+
+**17. Incident response exercises (7.8.8)**
+
+Least → most disruptive: **checklist/read-through** → **tabletop** (talk through a scenario, no systems touched, cheapest) → **walkthrough** → **simulation** (no real systems affected) → **full live/full-scale** (real systems + teams). Test plan, roles, communication; then update the plan.
+
+**On the exam**
+
+- NIST six-step monitoring program → **ISCM, SP 800-137** · inline drops packets → **IPS** · only alerts → **IDS**
+- Zero-days via deviations → **anomaly-based** · can't inspect encrypted traffic → **NIDS** (HIDS sees decrypted)
+- Correlates firewall/server/cloud logs → **SIEM** · phishing alert auto-quarantines → **SOAR**
+- Fake admin credentials planted → **honeytoken** · mean time to detect → **MTTD**
+- 10 failed logins flagged → **alert** (not yet an incident) · RAM or disk first → **RAM** · who handled evidence → **chain of custody**
+- Isolate → remove → restore → **containment → eradication → recovery**
+- Same server reinfected weekly → missing **problem management / RCA** · ransomware scenario discussed at a table → **tabletop**
+- **Traps:** IPS can block legit traffic; powering off destroys RAM evidence; incident ≠ problem management.
+
+**Quick check + your answers**
+
+1. Inline device auto-drops malicious packets → **IPS** ✅
+
+2. RAM, disk images, logs → **RAM first** (order of volatility) ✅
+
+3. Server reinfected every week, cleaned each time → **problem management** ✅
+
+**Quick check:** (1) Inline device auto-drops malicious packets: IDS or IPS? (2) RAM, disk images, logs: which first, why? (3) Server reinfected every week, cleaned each time: missing process?
+
+**Answer:** IPS; RAM (order of volatility); problem management. All correct.
+
+</details>
 
 ## 7.9 Patch management
 
@@ -2118,13 +4764,195 @@ Identify, test, approve, deploy, verify, with a rollback plan.
 > On the exam: Steps: identify patches, assess risk, test in non-production, approve via change management, deploy, verify, with a rollback plan.
 Scenario cue: 'a patch applied directly to production broke the app' → skipped testing and change management.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-9-2"></a>
-**Emergency patching**
+**Emergency patching** (review)
 
 Expedited process for actively exploited vulnerabilities.
 
 > On the exam: What it is: a fast-track process for critical, actively exploited flaws: expedited testing and approval, documented and reviewed afterwards.
 Trap: emergency doesn't mean skipping change management entirely.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** I named emergency patching; documentation + review not given. Shaky.
+
+</details>
 
 ## 7.10 Vulnerability management
 
@@ -2136,6 +4964,97 @@ Public IDs for vulnerabilities and NIST's database of them.
 > On the exam: CVE: a unique ID for a publicly known vulnerability (CVE-2021-44228). NVD: NIST's database adding CVSS scores, affected products and references.
 Scenario cue: 'where do you find the severity score of a known CVE?' → NVD.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-10-2"></a>
 **Triage and tracking**
 
@@ -2145,6 +5064,97 @@ Prioritize by CVSS, exploitability (e.g., EPSS, CISA KEV) and asset value.
 Prioritize with CVSS, plus exploitation data: CISA KEV (known exploited) and EPSS (probability of exploitation), plus asset value.
 Scenario cue: 'medium CVSS but listed in KEV' → prioritize it, it's actively exploited.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-10-3"></a>
 **Remediation SLAs**
 
@@ -2152,6 +5162,97 @@ Deadlines by severity, e.g., critical within days.
 
 > On the exam: What it is: fix deadlines by severity, e.g., critical 7 days, high 30, medium 90.
 Measured by mean time to remediate; missed SLAs need risk acceptance or exceptions.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
 
 ## 7.11 Runtime protection
 
@@ -2164,6 +5265,97 @@ Runtime application self-protection: inside the app, blocks attacks with app con
 Strengths: app context, low false positives. Weaknesses: performance overhead, tied to the language/runtime.
 Don't confuse: RASP is inside the app; a WAF is outside. IAST tests; RASP protects.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-11-2"></a>
 **WAF**
 
@@ -2173,6 +5365,97 @@ Web application firewall: outside the app, filters HTTP traffic.
 Use: virtual patching while a real fix is built.
 Trap: a WAF is a compensating layer, not a replacement for fixing the code.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-11-3"></a>
 **ASLR**
 
@@ -2180,6 +5463,97 @@ Randomizes memory addresses so exploits can't predict locations.
 
 > On the exam: What it is: Address Space Layout Randomization, loads code and data at random memory addresses each run, so attackers can't predict where to jump.
 Scenario cue: 'exploits relying on fixed memory addresses stop working' → ASLR.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
 
 <a name="t-7-11-4"></a>
 **DEP / NX**
@@ -2189,6 +5563,97 @@ Data execution prevention: memory marked as data can't be executed.
 > On the exam: What it is: Data Execution Prevention / No-eXecute bit: memory areas for data (stack, heap) can't run as code.
 Scenario cue: 'injected shellcode on the stack fails to execute' → DEP/NX.
 Together with ASLR: DEP stops running injected code; ASLR stops reusing existing code at known addresses.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
 
 ## 7.12 Continuity of operations
 
@@ -2200,6 +5665,97 @@ Backups are for recovery; archives for long-term retention.
 > On the exam: Backup: copy for recovery after loss or ransomware (3-2-1 rule: 3 copies, 2 media types, 1 offsite; plus offline/immutable). Archive: long-term retention of data no longer active. Retention: how long each must be kept.
 Trap: an untested backup is not a backup; test restores regularly.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-12-2"></a>
 **DRP vs BCP**
 
@@ -2207,6 +5763,97 @@ Disaster recovery restores IT; business continuity keeps the business running.
 
 > On the exam: DRP: restoring IT systems after a disaster (technical focus). BCP: keeping critical business functions running during and after a disruption (whole-business focus). DRP is part of BCP.
 Scenario cue: 'how will staff process orders while the system is down?' → BCP.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
 
 <a name="t-7-12-3"></a>
 **Business impact analysis (BIA)**
@@ -2216,6 +5863,97 @@ Identifies critical functions and drives recovery targets.
 > On the exam: What it is: identifies critical business processes, impact of their loss over time, and dependencies. It sets MTD, RTO and RPO.
 Scenario cue: 'first step in continuity planning' → BIA.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-12-4"></a>
 **RTO, RPO, MTD**
 
@@ -2223,6 +5961,97 @@ Time to restore, acceptable data loss, maximum tolerable downtime (RTO must be u
 
 > On the exam: MTD: longest the business can survive the outage. RTO: target time to restore (must be less than MTD). RPO: maximum acceptable data loss in time, which sets backup frequency.
 Scenario cue: 'can lose at most 15 minutes of data' → RPO 15 minutes; needs replication or very frequent backups.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
 
 <a name="t-7-12-5"></a>
 **MTBF and MTTR**
@@ -2232,6 +6061,97 @@ Mean time between failures; mean time to repair.
 > On the exam: MTBF: average time between failures (reliability; higher is better). MTTR: average time to repair (lower is better).
 Availability improves when MTBF rises and MTTR falls.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-12-6"></a>
 **Hot, warm, cold sites**
 
@@ -2240,6 +6160,97 @@ Ready immediately / partly equipped / space only.
 > On the exam: Hot site: fully equipped, data current, ready in minutes to hours (most expensive). Warm site: equipment but not current data, days. Cold site: space and power only, weeks (cheapest).
 Scenario cue: 'RTO of 1 hour' → hot site (or active-active cloud).
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-12-7"></a>
 **Resiliency**
 
@@ -2247,12 +6258,194 @@ Operational redundancy, erasure coding, survivability, DoS/DDoS protection.
 
 > On the exam: Operational redundancy: duplicate systems and failover. Erasure coding: data split with parity so lost pieces can be rebuilt. Survivability: keep critical functions under attack. DoS protection: rate limiting, CDNs, scrubbing services, autoscaling.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-12-8"></a>
 **DR and BCP test types**
 
 Checklist (review the plan), tabletop/structured walkthrough (talk through a scenario), simulation (practice without switching systems), parallel (bring up recovery site while production keeps running), full interruption (shut down production and fail over; most realistic and most risky).
 
 > On the exam: Scenario cue: 'most thorough test, but could disrupt the business' → full interruption.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
 
 ## 7.13 SLOs and SLAs
 
@@ -2264,12 +6457,194 @@ Measurement / internal target / contractual commitment with penalties.
 > On the exam: SLI (indicator): the actual measurement, e.g., uptime %. SLO (objective): the internal target, e.g., 99.95%. SLA (agreement): the contractual promise with penalties, e.g., 99.9%.
 Rule: set the SLO stricter than the SLA to leave a buffer.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-13-2"></a>
 **SLA contents**
 
 Maintenance windows, performance, availability (nines), qualified personnel.
 
 > On the exam: Include: availability target (e.g., 99.9% = about 8.8 hours of downtime per year), performance, maintenance windows, support response times, qualified staff, security duties (incident notification time, patch timelines), and penalties.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
 
 ## 7.AI AI additions in the current outline
 
@@ -2281,6 +6656,97 @@ Using AI to monitor and self-heal infrastructure.
 > On the exam: What it is: using AI to monitor operations, detect anomalies and fix issues automatically (self-healing).
 Risk: automated actions need limits and human oversight so a wrong decision doesn't cause an outage.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-ai-2"></a>
 **Model drift**
 
@@ -2289,12 +6755,194 @@ Model accuracy degrading in production as real data changes.
 > On the exam: What it is: model performance drops because real-world data changes from what it was trained on.
 Controls: monitor accuracy and input distributions; retrain and revalidate; alert on sudden changes (which may also signal an attack).
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-ai-3"></a>
 **Sandboxed staging for models**
 
 Test updated model weights in isolation before deployment.
 
 > On the exam: What it means: test new model versions in an isolated staging environment (behavior, safety, security) before production; keep the ability to roll back.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
 
 <a name="t-7-ai-4"></a>
 **EU AI Act**
@@ -2303,9 +6951,191 @@ Risk-based EU regulation of AI systems.
 
 > On the exam: What it is: EU law classifying AI systems by risk: unacceptable (banned), high-risk (strict requirements: risk management, data quality, logging, human oversight), limited (transparency duties), minimal.
 
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
+
 <a name="t-7-ai-5"></a>
 **AI-generated code legal risk**
 
 Copyright and licensing questions around generated code.
 
 > On the exam: What it means: AI-generated code may copy licensed code or have unclear copyright. Track provenance and scan for license matches.
+
+<details><summary>Lesson (24 Nov 2026)</summary>
+
+**All remaining Domain 7: 7.9 → 7.AI (24 topics)**
+
+**7.9 Patch management**
+
+**1. Patch process (7.9.1):** **identify → assess → test → approve (change mgmt) → deploy → verify**, always with a **rollback plan**. Identify via advisories, scanners, SCA, inventory; assess applicability + urgency; test in non-prod, deploy in waves (pilot first); verify + **patch compliance** metrics.
+
+**2. Emergency patching (7.9.2):** expedited path for **actively exploited/critical** flaws (zero-days): emergency CAB, minimal testing, fast deploy — **still documented (often after the fact) and reviewed**; no patch yet → **compensating controls** (WAF rule, disable feature, isolate). Emergency ≠ uncontrolled.
+
+**7.10 Vulnerability management**
+
+**3. CVE and NVD (7.10.1):** **CVE** = public ID per vulnerability (MITRE, issued by CNAs). **NVD** = NIST database enriching CVEs with **CVSS**, affected products (**CPE**), references. *Hook: CVE = the name tag; NVD = the folder with the details.*
+
+**4. Triage and tracking (7.10.2):** prioritize by **CVSS** + exploitability (**CISA KEV** = actually exploited in the wild; **EPSS** = probability of exploitation soon) + **asset value/exposure**; track to closure with owner + deadline.
+
+**5. Remediation SLAs (7.10.3):** fix deadlines by severity (org-set: critical days, high weeks, medium 1–2 months); missed SLA → escalation or formal exception; metric = vulns past SLA.
+
+**7.11 Runtime protection**
+
+**6. RASP (7.11.1):** security **inside the running app** (agent/library), **uses app context**, blocks attacks live; fewer FPs; overhead, language-specific.
+
+**7. WAF (7.11.2):** **outside the app**, filters HTTP (SQLi, XSS, bots) on reverse proxy/CDN; protects many apps, quick **virtual patching**; no internal view, bypassable. *Hook: WAF = guard at the gate; RASP = bodyguard in the room. IAST tests (QA); RASP protects (prod).*
+
+**8. ASLR (7.11.3):** random memory locations each run → exploits can't predict addresses.
+
+**9. DEP/NX (7.11.4):** data memory can't execute → injected shellcode won't run.
+
+**7.12 Continuity of operations**
+
+**10. Backup, archiving, retention (7.12.1):** backups = **recovery**; archives = **long-term retention** (legal/compliance, cheaper storage); retention schedule (legal min, privacy max) + **legal holds**.
+
+**11. DRP vs BCP (7.12.2):** **DRP** restores **IT** systems/data; **BCP** keeps the **whole business** running (people, locations, processes, comms, workarounds). **DRP is part of BCP.** *Hook: DRP = fix the computers; BCP = keep the shop open.*
+
+**12. BIA (7.12.3):** identifies **critical business functions** + impact (financial, legal, reputational) → **drives RTO/RPO/MTD** and priorities; **comes first**.
+
+**13. RTO, RPO, MTD (7.12.4):** **RTO** = how fast to restore · **RPO** = acceptable data loss (how far back) · **MTD** = breaking point · **RTO &lt; MTD**. *Hook: RPO = how far back (data); RTO = how fast (time); MTD = the breaking point.*
+
+**14. MTBF and MTTR (7.12.5):** MTBF higher = more reliable; MTTR lower = better; MTTR is a measured average, not a limit like RTO.
+
+**15. Hot, warm, cold sites (7.12.6):** **hot** = fully equipped + current data, minutes–hours, priciest · **warm** = partial, data restored, hours–days · **cold** = space/power/cooling, days–weeks, cheapest · also mobile, **reciprocal agreements** (hard to enforce), cloud. *Hook: hot = move in today; warm = bring your files; cold = bring everything.*
+
+**16. Resiliency (7.12.7):** **operational redundancy** (spares, multi-AZ, load balancing, failover) · **erasure coding** (data + parity pieces, rebuild even if some lost; like distributed RAID) · **survivability / graceful degradation** · **DoS/DDoS protection** (rate limiting, scrubbing, CDNs).
+
+**17. DR/BCP test types (7.12.8):** **checklist** → **tabletop/structured walkthrough** → **simulation** (no system switching) → **parallel** (recovery site up while production runs) → **full interruption** (production shut down, real failover; most realistic + risky). *Hook: read it → talk it → act it → run it alongside → pull the plug.*
+
+**7.13 SLOs and SLAs**
+
+**18. SLI, SLO, SLA (7.13.1):** **SLI** = what you measure · **SLO** = internal target · **SLA** = customer contract **with penalties** (service credits); SLO usually **stricter** than SLA. *Hook: SLI = speedometer; SLO = target speed; SLA = speed limit with a fine.*
+
+**19. SLA contents (7.13.2):** availability nines (**99.9% ≈ 8.8 h/yr**, **99.99% ≈ 53 min/yr**, **99.999% ≈ 5 min/yr**) · performance · **maintenance windows** (often excluded) · support response + qualified personnel · responsibilities · credits · reporting · escalation · exclusions · **security commitments** (incident notification, audit rights).
+
+**7.AI**
+
+**20. AIOps (7.AI.1):** AI runs IT ops (anomaly detection, correlation, failure prediction, **self-healing**); risks: wrong automated action at scale, attackers fooling the model → human oversight for big changes.
+
+**21. Model drift (7.AI.2):** accuracy degrades in production as real data changes — **data drift** (inputs change) vs **concept drift** (meaning of the right answer changes, e.g. fraud tactics) → monitor + **retrain** below thresholds.
+
+**22. Sandboxed staging for models (7.AI.3):** test updated weights **in isolation** (accuracy, bias, safety, security) before promotion; verify integrity/provenance (signatures); canary rollout + rollback.
+
+**23. EU AI Act (7.AI.4):** EU **risk-based** AI law, in force **Aug 2024**, obligations phased in. Tiers: **unacceptable = banned** (government social scoring, manipulative AI) · **high risk** = strict obligations (risk mgmt, data quality, logging, **human oversight**, accuracy, conformity assessment; hiring, credit scoring, medical devices, critical infrastructure) · **limited** = transparency (chatbot disclosure, deepfake labels) · **minimal** = none (spam filters). GPAI duties; fines up to **7% of global turnover**. *Hook: banned, strictly controlled, be transparent, or free to go.*
+
+**24. AI-generated code legal risk (7.AI.5):** purely AI code may **not be copyrightable** (human authorship) → unclear ownership · **license contamination** (reproduced GPL code) · liability. Controls: track AI code, SCA + license scanning, public-code-matching filters, vendor **IP indemnification**, policy.
+
+**On the exam**
+
+- Actively exploited, weekly cycle → **emergency patching** (still documented + reviewed) · no patch yet → **compensating controls**
+- Exploited in the wild → **CISA KEV** · probability → **EPSS**
+- Inside the app with context → **RASP** · HTTP filter in front → **WAF**
+- Restore IT → **DRP** · keep business running → **BCP** · critical functions + targets → **BIA** (first)
+- Max 4 h data loss → **RPO** · back within 2 h → **RTO** · higher = more reliable → **MTBF**
+- Ready in minutes, priciest → **hot site** · space + power only → **cold**
+- Recovery site up while prod runs → **parallel test** · prod shut down → **full interruption**
+- Internal 99.95% target → **SLO** · contract with credits → **SLA** · 99.99% → ~53 min/yr
+- Fraud model accuracy falls as tactics change → **concept drift** · AI in hiring under EU law → **high-risk**
+- **Traps:** DRP ⊂ BCP; RTO &lt; MTD; emergency patches still documented; SLO stricter than SLA.
+
+**Quick check + your answers**
+
+1. Actively exploited flaw, weekly cycle → **emergency patching** ✅; "what still has to happen" not given → **documentation (often after) + review**; compensating controls if no patch.
+
+2. Inside the app using context → **RASP** ✅
+
+3. Can lose at most 4 hours of data → **RPO** ✅
+
+**Quick check:** (1) Actively exploited flaw, weekly cycle: process + what still must happen? (2) Inside the app using context: RASP or WAF? (3) At most 4 hours of data loss: metric?
+
+**Answer:** Emergency patching; RASP; RPO. Correct.
+
+</details>
