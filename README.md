@@ -15,9 +15,9 @@ My notes for the ISC2 CSSLP (Certified Secure Software Lifecycle Professional) e
 | [4. Secure Software Architecture and Design](domains/04-secure-software-architecture-and-design.md) | 15% | 101 | 86 | 15 | 0 | 101 |
 | [5. Secure Software Implementation](domains/05-secure-software-implementation.md) | 14% | 86 | 78 | 8 | 0 | 86 |
 | [6. Secure Software Testing](domains/06-secure-software-testing.md) | 14% | 83 | 72 | 11 | 0 | 83 |
-| [7. Secure Software Deployment, Operations, Maintenance](domains/07-secure-software-deployment-operations-maintenance.md) | 11% | 74 | 21 | 3 | 50 | 24 |
+| [7. Secure Software Deployment, Operations, Maintenance](domains/07-secure-software-deployment-operations-maintenance.md) | 11% | 74 | 70 | 4 | 0 | 74 |
 | [8. Secure Software Supply Chain](domains/08-secure-software-supply-chain.md) | 10% | 55 | 0 | 0 | 55 | 0 |
-| **Total** | 100% | 615 | 458 | 52 | 105 | 496 |
+| **Total** | 100% | 615 | 507 | 53 | 55 | 546 |
 <!-- progress:end -->
 
 The review list of shaky terms is in [review.md](review.md).
