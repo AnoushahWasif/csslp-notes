@@ -950,3 +950,57 @@ Short definitions and lists to memorise, grouped by section.
 ### 6.AI
 
 - **AI testing** (Poisoning = textbook, evasion = exam trick; Go Make More Money): Bias, drift, toxicity; mutation testing for AI tests; agent scope testing; token limits; AI RMF Govern/Map/Measure/Manage.
+
+## Secure Deployment, Operations, Maintenance (Domain 7)
+
+### 7.1
+
+- **Operational risk + cutover** (Big bang jump, parallel = old bridge open, pilot = test kitchen, canary = warning bird): Env separation (no dev prod access), role training, legal compliance, integration risk (dedicated least-privileged accounts), acceptance sign-off.
+
+### 7.11
+
+- **Runtime protection** (WAF = gate guard, RASP = bodyguard in the room): ASLR shuffles rooms; DEP/NX no running in data rooms.
+
+### 7.12
+
+- **Continuity** (DRP = fix computers, BCP = keep shop open; hot/warm/cold; read → talk → act → alongside → pull the plug): BIA first; RPO how far back, RTO how fast, MTD breaking point; MTBF high, MTTR low; erasure coding.
+
+### 7.13
+
+- **Service levels** (SLI speedometer, SLO target, SLA limit with a fine): 99.9% ≈ 8.8 h/yr, 99.99% ≈ 53 min, 99.999% ≈ 5 min; SLO stricter than SLA.
+
+### 7.2
+
+- **Config + version control** (Baseline = recipe; fix the kitchen; CMDB = family tree; version control = time machine with fingerprints): Inventory (CIS 1), CIS Benchmarks/DISA STIGs, drift → restore, branch protection, signed commits, re-engineering preserves controls.
+
+### 7.3
+
+- **Release** (Protect the road, inspect trucks, check the seal, lock the warehouse): Ephemeral least-privilege runners, OIDC short-lived creds, toolchain gates, signed artifacts + admission control, immutable repo, release = ship it.
+
+### 7.4
+
+- **Keys + secrets** (Born, shipped, stored, used, renewed, backed up, retired, destroyed; HSM = vault room, KMS = safe-deposit service): Vaults, dynamic secrets, NIST 800-57, BYOK/HYOK, ACME cert automation, key escrow M-of-N.
+
+### 7.5
+
+- **Installation** (MSB = must be this secure to ride production): Secure boot chain of trust, least-privilege install, hardening, secure provisioning (golden images), secure defaults.
+
+### 7.6
+
+- **Approval to operate** (ATO = license, sign-off = signature, POA&M = repair list): AO accepts residual risk; SSP + SAR + POA&M; ATO/IATO/DATO; reauthorize on major change.
+
+### 7.7
+
+- **Monitoring** (IDS = smoke alarm, IPS = sprinkler; SIEM spots, SOAR handles): ISCM 800-137 six steps; logs/metrics/traces; HIDS vs NIDS; honeypot vs honeytoken; MTTD/MTTR.
+
+### 7.8
+
+- **Incident response** (Collect what's in the air before what's on paper; incident = fire, problem = why fires start): 800-61 phases; event → alert → incident; chain of custody; contain → eradicate → recover; 5 whys/fishbone; tabletop → full-scale.
+
+### 7.9–7.10
+
+- **Patches + vulns** (CVE = name tag, NVD = folder): Identify → assess → test → approve → deploy → verify + rollback; emergency still documented; CVSS + KEV + EPSS + asset value; SLAs.
+
+### 7.AI
+
+- **AI in operations** (EU AI Act: banned, strictly controlled, transparent, free): AIOps with human oversight; data vs concept drift; sandboxed model staging; AI code copyright + license contamination.
