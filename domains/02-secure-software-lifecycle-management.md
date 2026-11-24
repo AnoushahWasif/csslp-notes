@@ -2305,7 +2305,7 @@ Scenario cue: 'which metric helps prevent problems before they happen?' → a le
 
 **Quick check:** Sort: 1 breaches this year; 2 % features with threat model before coding; 3 avg cost per incident last quarter; 4 % devs passed secure coding training.
 
-**Answer:** User: lagging 1,3,4; leading 2. Score 3/4. #4 is LEADING: training predicts fewer bugs; past tense fooled it. Marked shaky.
+**Answer:** My answer: lagging 1,3,4; leading 2. Score 3/4. #4 is LEADING: training predicts fewer bugs; past tense fooled it. Marked shaky.
 
 </details>
 
@@ -2340,7 +2340,7 @@ Scenario cue: 'management ignores the security report' → metrics aren't tied t
 
 **Quick check:** Board metric: A total SAST scans run 12,400 vs B critical vulns in customer-facing apps fixed within SLA rose 60% to 92%.
 
-**Answer:** User chose A (wrong). Answer B: specific, tied to business risk, outcome not activity, trend, board-friendly. A = activity/vanity metric. Marked shaky.
+**Answer:** I chose A (wrong). Answer B: specific, tied to business risk, outcome not activity, trend, board-friendly. A = activity/vanity metric. Marked shaky.
 
 </details>
 
@@ -2797,7 +2797,7 @@ Steps to retire software: notify users, migrate or archive data, remove access a
 
 **Quick check:** Order: A revoke certs/disable service accounts; B notify users; C update asset inventory; D archive data for legal retention; E sanitize media.
 
-**Answer:** User: B A D E C. Correct: B D A E C. Swapped A and D: archive BEFORE removing access, because the service accounts/certs may be needed to extract the data. Marked shaky.
+**Answer:** My answer: B A D E C. Correct: B D A E C. Swapped A and D: archive BEFORE removing access, because the service accounts/certs may be needed to extract the data. Marked shaky.
 
 </details>
 
@@ -3081,7 +3081,7 @@ Product security evaluation; EAL1-7 assurance levels, protection profiles.
 
 **Quick check:** Agency lists requirements for all smart card readers; vendor documents how its reader meets them. Name each; what does EAL4 tell?
 
-**Answer:** User named 15408 (the whole standard) and EAL4 description right but not what it tells. Answer: agency doc = PP, vendor doc = ST; EAL4 = level of CONFIDENCE claims are true, not more features. Re-taught with apartment analogy; re-check hospital infusion pump requirements = PP, correct. Marked shaky.
+**Answer:** I named 15408 (the whole standard) and EAL4 description right but not what it tells. Answer: agency doc = PP, vendor doc = ST; EAL4 = level of CONFIDENCE claims are true, not more features. Re-taught with apartment analogy; re-check hospital infusion pump requirements = PP, correct. Marked shaky.
 
 </details>
 
@@ -3126,7 +3126,7 @@ Requirements for systems and software handling payment card data.
 
 **Quick check:** Online shop wants to STOP storing card numbers but charge returning customers. Technique and why?
 
-**Answer:** User: tokenization or segmentation, mixed in the CVV rule. Answer: TOKENIZATION; processor vaults PAN, shop keeps token, database out of scope. Segmentation still stores PAN. Never-store-after-auth rule is for CVV2/SAD, not PAN. Marked shaky.
+**Answer:** My answer: tokenization or segmentation, mixed in the CVV rule. Answer: TOKENIZATION; processor vaults PAN, shop keeps token, database out of scope. Segmentation still stores PAN. Never-store-after-auth rule is for CVV2/SAD, not PAN. Marked shaky.
 
 </details>
 
@@ -3169,7 +3169,7 @@ Don't confuse: 800-37 = the RMF process; 800-53 = the controls; 800-30 = how to 
 
 **Quick check:** Cloud provider selling to federal agencies: which publication has the controls, how decide which set?
 
-**Answer:** User: 800-53 control book; 800-37 decides. Mostly right. Complete: FIPS 199 rates L/M/H -> 800-53B baseline -> tailor, via FedRAMP; RMF process 800-37.
+**Answer:** My answer: 800-53 control book; 800-37 decides. Mostly right. Complete: FIPS 199 rates L/M/H -> 800-53B baseline -> tailor, via FedRAMP; RMF process 800-37.
 
 </details>
 
@@ -3212,7 +3212,7 @@ Categorize, select, implement, assess, authorize, monitor.
 
 **Quick check:** Independent team tests controls; senior official allows go-live if 2 weaknesses fixed in 90 days. Name team step, official step, approval, tracking doc.
 
-**Answer:** User: Assess correct; called official step the ATO; approval = plan of action authorization; POA&M correct. Answer: Assess / Authorize / ATO / POA&M. Marked shaky.
+**Answer:** My answer: Assess correct; called official step the ATO; approval = plan of action authorization; POA&M correct. Answer: Assess / Authorize / ATO / POA&M. Marked shaky.
 
 </details>
 
@@ -3252,7 +3252,7 @@ Scenario cue: 'which NIST publication explains how to conduct a risk assessment?
 
 **Quick check:** How likely is ransomware on benefits system and how badly would it hurt: which NIST pub, which two factors?
 
-**Answer:** User: 800-37; factors determine risk + identify threat (wrong). Answer: 800-30; likelihood x impact. Re-check (choose controls=53, estimate likelihood/impact=30, AO grants ATO=37) all correct. Marked shaky.
+**Answer:** My answer: 800-37; factors determine risk + identify threat (wrong). Answer: 800-30; likelihood x impact. Re-check (choose controls=53, estimate likelihood/impact=30, AO grants ATO=37) all correct. Marked shaky.
 
 </details>
 
@@ -3781,7 +3781,7 @@ Mitigate, accept, transfer (insurance, contract), avoid.
 
 **Quick check:** Stop storing SSNs / processor takes liability / owner signs to leave low-risk bug: responses?
 
-**Answer:** User: mitigate, transfer, accept. #1 should be AVOID (activity stopped). 2/3. Marked shaky.
+**Answer:** My answer: mitigate, transfer, accept. #1 should be AVOID (activity stopped). 2/3. Marked shaky.
 
 </details>
 
@@ -3903,7 +3903,7 @@ Technical risk is the flaw's effect on the system; business risk is financial, l
 
 **Quick check:** Rewrite "authentication bypass CVSS 9.1 in portal session handler" for the CFO.
 
-**Answer:** User: can cause severe customer data leakage. Good direction; stronger with $ estimate, GDPR fines, reputation, and the fix cost next to it.
+**Answer:** My answer: can cause severe customer data leakage. Good direction; stronger with $ estimate, GDPR fines, reputation, and the fix cost next to it.
 
 </details>
 
@@ -3946,7 +3946,7 @@ Capability Maturity Model Integration (from SEI). Five levels: 1 Initial (chaoti
 
 **Quick check:** Projects follow own documented plans + track progress, teams differ; CTO wants one company-wide process. Current/target?
 
-**Answer:** User: 4 then 3. Answer: now 2 (Managed), target 3 (Defined). No metrics mentioned so not 4. Marked shaky.
+**Answer:** My answer: 4 then 3. Answer: now 2 (Managed), target 3 (Defined). No metrics mentioned so not 4. Marked shaky.
 
 </details>
 
@@ -4020,7 +4020,7 @@ Value of a control = ALE before − ALE after − annual cost of the control.
 
 **Quick check:** ALE 200k -> 50k with DLP costing 60k/yr: value, worth it?
 
-**Answer:** User: not worth it (compared cost to the 50k left over). Answer: 200k-50k=150k saved; 150k-60k=+90k worth it. Re-check 80k->30k, 70k cost: not worth it, saving 50k correct; value -20k. Marked shaky.
+**Answer:** My answer: not worth it (compared cost to the 50k left over). Answer: 200k-50k=150k saved; 150k-60k=+90k worth it. Re-check 80k->30k, 70k cost: not worth it, saving 50k correct; value -20k. Marked shaky.
 
 </details>
 
@@ -4146,7 +4146,7 @@ US Federal Information Processing Standards: FIPS 140-2/140-3 (crypto module val
 
 **Quick check:** Rate system L/M/H / HSM wipes keys if opened / government smart cards: FIPS numbers?
 
-**Answer:** Skipped by user. Answers: 199; 140-3 Level 3; 201. Marked shaky until quizzed.
+**Answer:** Skipped. Answers: 199; 140-3 Level 3; 201. Marked shaky until quizzed.
 
 </details>
 
@@ -4182,7 +4182,7 @@ US Federal Information Processing Standards: FIPS 140-2/140-3 (crypto module val
 
 **Quick check:** Ransomware incident guidance / password + MFA rules / pen test: 800-numbers?
 
-**Answer:** Skipped by user. Answers: 800-61; 800-63; 800-115. Marked shaky until quizzed.
+**Answer:** Skipped. Answers: 800-61; 800-63; 800-115. Marked shaky until quizzed.
 
 </details>
 
@@ -4216,7 +4216,7 @@ ISO/IEC 9126 and its successor 25010 (software quality models, SQuaRE series), 1
 
 **Quick check:** Quality model with security as a characteristic / full software lifecycle processes?
 
-**Answer:** Skipped by user. Answers: 25010; 12207. Marked shaky until quizzed.
+**Answer:** Skipped. Answers: 25010; 12207. Marked shaky until quizzed.
 
 </details>
 
@@ -4255,7 +4255,7 @@ PA-DSS was the PCI standard for payment application vendors; it was retired and 
 
 **Quick check:** POS software vendor: current standard for (1) product (2) development process?
 
-**Answer:** User said PCI DSS. Answer: Secure Software Standard; Secure SLC Standard. Marked shaky.
+**Answer:** I said PCI DSS. Answer: Secure Software Standard; Secure SLC Standard. Marked shaky.
 
 </details>
 
@@ -4482,7 +4482,7 @@ Change management: approves and controls changes. Configuration management: trac
 
 **Quick check:** Which exact library version on every server / CAB rejects firewall port / bundle 12 fixes into v4.2 and deploy.
 
-**Answer:** User: release, change, config (1 and 3 swapped). Correct: configuration, change, release. Re-check: config audit finds OpenSSL mismatch = configuration, correct. Marked shaky.
+**Answer:** My answer: release, change, config (1 and 3 swapped). Correct: configuration, change, release. Re-check: config audit finds OpenSSL mismatch = configuration, correct. Marked shaky.
 
 </details>
 
@@ -4669,7 +4669,7 @@ Top risks such as prompt injection, sensitive info disclosure, excessive agency.
 
 **Quick check:** AI email assistant reads/summarizes/sends; attacker email with hidden forward instruction; it forwards 50 emails. Two risks?
 
-**Answer:** User: least privilege + direct prompt injection. Correct: INDIRECT prompt injection + EXCESSIVE AGENCY (least privilege is the fix, not the risk name). Marked shaky.
+**Answer:** My answer: least privilege + direct prompt injection. Correct: INDIRECT prompt injection + EXCESSIVE AGENCY (least privilege is the fix, not the risk name). Marked shaky.
 
 </details>
 

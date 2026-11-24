@@ -267,7 +267,7 @@ New software changes the risk of connected systems: new trust relationships, dat
 
 **Quick check:** (1) Bank can't risk any downtime, can afford cost: cutover? (2) Developers with prod admin: problem? (3) CRM ↔ billing via shared admin account: risk area + fix?
 
-**Answer:** Named system integration risk; fix (dedicated least-privileged account) not given. Shaky.
+**Answer:** I named system integration risk; fix (dedicated least-privileged account) not given. Shaky.
 
 </details>
 
@@ -684,7 +684,7 @@ Refactor legacy structure or **migrate platforms** (COBOL → Java, on-prem → 
 
 **Quick check:** (1) 40 servers differ from hardening standard after manual fixes: name + fix? (2) Which apps depend on this DB server: where to look? (3) Push straight to main with no review: missing control?
 
-**Answer:** Said documentation; answer CMDB. Shaky.
+**Answer:** I said documentation; answer CMDB. Shaky.
 
 </details>
 

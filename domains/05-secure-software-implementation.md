@@ -2063,11 +2063,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -2401,11 +2401,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -2529,11 +2529,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -2656,11 +2656,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -2782,11 +2782,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -3022,11 +3022,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -3467,11 +3467,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -3594,11 +3594,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -3720,11 +3720,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -5531,11 +5531,11 @@ Decide **what**, **where**, at **what level**, driven by **data classification**
 
 **Quick check + your answers**
 
-1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (you got this) + **slow hash (Argon2/bcrypt)**. (You said "app-level encryption" for the attack.)
+1. Unsalted SHA-256 table cracked via precomputed lookups: attack + two fixes → **Rainbow tables**; fixes **unique salts** ✅ (got this) + **slow hash (Argon2/bcrypt)**. (I said "app-level encryption" for the attack.)
 
-2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (You said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
+2. Identical records → identical ciphertext: what's missing → **a unique random IV** (or ECB mode is in use). (I said catastrophic/algorithm selection — that's nonce reuse, a different issue.)
 
-3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (You said TDE = in transit; it's at rest.)
+3. TDE on, SQLi dumps card numbers in plain text: why, and what helps → TDE is **at rest** (files/disk), the DB **decrypts for any valid query**, so injection gets plain text → **field/app-level encryption or tokenization** + **parameterized queries**. (I said TDE = in transit; it's at rest.)
 
 **Quick check:** (1) Unsalted SHA-256 cracked via precomputed lookups: attack + two fixes? (2) Identical records give identical AES ciphertext: what's missing? (3) TDE on, SQL injection dumps card numbers: why, and what helps?
 
@@ -7148,7 +7148,7 @@ Inventories third-party/open-source components incl. **transitive** · matches v
 
 **Quick check:** (1) CWE-89 in your code, CVE-2021-44228 in a library: which is which, which tool finds each? (2) Code deletes payroll if developer's ID removed: name + review practice? (3) NIST project with known-flaw test programs for tools?
 
-**Answer:** Did not map SAST to own-code CWE. Shaky.
+**Answer:** I did not map SAST to own-code CWE. Shaky.
 
 </details>
 
@@ -7339,7 +7339,7 @@ Inventories third-party/open-source components incl. **transitive** · matches v
 
 **Quick check:** (1) CWE-89 in your code, CVE-2021-44228 in a library: which is which, which tool finds each? (2) Code deletes payroll if developer's ID removed: name + review practice? (3) NIST project with known-flaw test programs for tools?
 
-**Answer:** Did not name manual code review as the catching practice. Shaky.
+**Answer:** I did not name manual code review as the catching practice. Shaky.
 
 </details>
 
@@ -7855,7 +7855,7 @@ Monitored process must **check in regularly** ("kick/pet"); if it stops (hung/cr
 
 **Quick check:** (1) Signature still valid after code-signing cert expired: why? (2) Independent rebuilds give a different hash than the release: meaning + practice? (3) Brand-new ransomware: which anti-malware detection?
 
-**Answer:** Answered "traps"; answer = behavior-based (heuristic). Shaky.
+**Answer:** I answered "traps"; answer = behavior-based (heuristic). Shaky.
 
 </details>
 
@@ -8300,7 +8300,7 @@ Inventories third-party/open-source components incl. **transitive** · matches v
 
 **Quick check:** (1) CWE-89 in your code, CVE-2021-44228 in a library: which is which, which tool finds each? (2) Code deletes payroll if developer's ID removed: name + review practice? (3) NIST project with known-flaw test programs for tools?
 
-**Answer:** Did not map SCA to library CVE. Shaky.
+**Answer:** I did not map SCA to library CVE. Shaky.
 
 </details>
 
@@ -8386,7 +8386,7 @@ Label/record AI-generated code (commit metadata) · **mandatory human review** +
 
 **Quick check:** (1) Legacy app can't support MFA for 6 months: governance handling? (2) Public acme-utils v99 installed over internal v1.2: attack + one fix? (3) Email assistant obeys hidden 'forward all invoices': attack + one control?
 
-**Answer:** Named dependency confusion; fix not recalled. Shaky.
+**Answer:** I named dependency confusion; fix not recalled. Shaky.
 
 </details>
 
@@ -9489,6 +9489,6 @@ Label/record AI-generated code (commit metadata) · **mandatory human review** +
 
 **Quick check:** (1) Legacy app can't support MFA for 6 months: governance handling? (2) Public acme-utils v99 installed over internal v1.2: attack + one fix? (3) Email assistant obeys hidden 'forward all invoices': attack + one control?
 
-**Answer:** Named prompt injection; limiting control not given. Shaky.
+**Answer:** I named prompt injection; limiting control not given. Shaky.
 
 </details>

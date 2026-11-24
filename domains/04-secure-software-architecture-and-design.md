@@ -605,7 +605,7 @@ Lots of logic in the browser (React/Angular SPAs; old Flash/Silverlight).
 
 **Quick check:** (1) Malicious page submits transfer form to bank using logged-in session: XSS or CSRF? (2) Two microservices both prove identity with certificates: name?
 
-**Answer:** Said API gateway for both-sides-certificates (answer: MUTUAL TLS); re-check said "only server TLS" (that is normal TLS). Marked shaky.
+**Answer:** I said API gateway for both-sides-certificates (answer: MUTUAL TLS); re-check said "only server TLS" (that is normal TLS). Marked shaky.
 
 </details>
 
@@ -659,7 +659,7 @@ Lots of logic in the browser (React/Angular SPAs; old Flash/Silverlight).
 
 **Quick check:** (1) Malicious page submits transfer form to bank using logged-in session: XSS or CSRF? (2) Two microservices both prove identity with certificates: name?
 
-**Answer:** Said XSS for malicious-page form submit (answer: CSRF); re-check: script in forum comment = XSS, correct. Marked shaky.
+**Answer:** I said XSS for malicious-page form submit (answer: CSRF); re-check: script in forum comment = XSS, correct. Marked shaky.
 
 </details>
 
@@ -704,7 +704,7 @@ Scenario cue: 'thousands of devices ship with the same default password' → req
 
 **Quick check:** (1) Smart thermostats cannot run antivirus, rarely patched: which NETWORK control? (2) Pump checks firmware is manufacturer-signed at every start: name?
 
-**Answer:** Answered NFC/RFID/IoT instead of the network control: NETWORK SEGMENTATION. Marked shaky.
+**Answer:** I answered NFC/RFID/IoT instead of the network control: NETWORK SEGMENTATION. Marked shaky.
 
 </details>
 
@@ -1030,7 +1030,7 @@ Scenario cue: 'one cloud VM can read another VM's memory through a CPU flaw' →
 
 **Quick check:** (1) One cloud VM reads another VM's memory via a CPU flaw: class + one defense? (2) Malware returns after reinstalling Windows: where is it hiding?
 
-**Answer:** Said Meltdown + browser isolation/CPU framework (microcode). Class = speculative execution (Spectre-style for cross-VM); defenses microcode/OS/hypervisor patches, dedicated hardware. Accepted.
+**Answer:** I said Meltdown + browser isolation/CPU framework (microcode). Class = speculative execution (Spectre-style for cross-VM); defenses microcode/OS/hypervisor patches, dedicated hardware. Accepted.
 
 </details>
 
@@ -1075,7 +1075,7 @@ Scenario cue: 'where to store a device's private key so malware can't extract it
 
 **Quick check:** (1) One cloud VM reads another VM's memory via a CPU flaw: class + one defense? (2) Malware returns after reinstalling Windows: where is it hiding?
 
-**Answer:** Said "hardware"; exact answer FIRMWARE (BIOS/UEFI, runs before OS). Marked shaky.
+**Answer:** I said "hardware"; exact answer FIRMWARE (BIOS/UEFI, runs before OS). Marked shaky.
 
 </details>
 
@@ -1603,7 +1603,7 @@ Wi-Fi: WEP is broken; use WPA2 or WPA3 (with enterprise authentication where pos
 
 **Quick check:** (1) Attacker silently copies contacts and messages over Bluetooth: which attack? (2) Protect work data on personal phones without controlling personal photos: approach?
 
-**Answer:** Said bluejacking for copying data (answer: BLUESNARFING = snatch). Marked shaky.
+**Answer:** I said bluejacking for copying data (answer: BLUESNARFING = snatch). Marked shaky.
 
 </details>
 
@@ -2044,7 +2044,7 @@ Authentication, authorization per call, rate limiting, input validation, version
 
 **Quick check:** (1) User changes /api/invoices/551 to 552 and sees another customer's invoice: flaw + fix? (2) https://bank.com vs https://bank.com:8443 same origin? (3) JWT holds home address 'because it's signed': what's wrong?
 
-**Answer:** Said missing HttpOnly; answer BOLA/IDOR, fix object-level authorization on every call. Marked shaky.
+**Answer:** I said missing HttpOnly; answer BOLA/IDOR, fix object-level authorization on every call. Marked shaky.
 
 </details>
 
@@ -2463,7 +2463,7 @@ Find sensitive data and stop it leaving.
 
 **Quick check:** (1) SQLi flaw, fix takes 3 weeks: what protects meanwhile, why not permanent? (2) Firewall with a table of open connections? (3) Employee copies SSN spreadsheet to USB: which DLP?
 
-**Answer:** Wavered rest/endpoint; USB = ENDPOINT DLP (in use). Marked shaky.
+**Answer:** I wavered rest/endpoint; USB = ENDPOINT DLP (in use). Marked shaky.
 
 </details>
 
@@ -2743,7 +2743,7 @@ TCB (edge = security perimeter) ⊃ security kernel (implements the reference mo
 
 **Quick check:** (1) Three properties of a reference monitor? (2) Disk key released only if TPM confirms boot unchanged: which feature? (3) Kernel ring vs app ring? Re-check: which ring has most privilege?
 
-**Answer:** First said "I don't know"; after bank re-teach described TPM as the tiny safe but did not name SEALED STORAGE. Marked shaky.
+**Answer:** I first said "I don't know"; after bank re-teach described TPM as the tiny safe but did not name SEALED STORAGE. Marked shaky.
 
 </details>
 
@@ -3076,7 +3076,7 @@ Standard DB protection + two sneaky leaks (inference, aggregation) + their odd f
 
 **Quick check:** (1) Subtracting regional totals reveals one customer's spend: aggregation or inference? (2) Why does polyinstantiation show a fake value instead of 'access denied'? (3) Web app connects as sa: which principle violated?
 
-**Answer:** Said "it prevents attacks" (too vague). Specific: access denied itself leaks that a secret exists = INFERENCE. Marked shaky.
+**Answer:** I said "it prevents attacks" (too vague). Specific: access denied itself leaks that a secret exists = INFERENCE. Marked shaky.
 
 </details>
 
@@ -3870,7 +3870,7 @@ Process isolation · normal-user/least privilege (UAC) · file permissions/ACLs 
 
 **Quick check:** (1) Hacked web server on SELinux still can't read the password file: which model, why? (2) Which protection randomizes memory placement? (3) Why do governments recommend memory-safe languages?
 
-**Answer:** Said discretionary with the MAC reason ("nobody overrides the law"): name is MANDATORY (MAC). Marked shaky.
+**Answer:** I said discretionary with the MAC reason ("nobody overrides the law"): name is MANDATORY (MAC). Marked shaky.
 
 </details>
 
@@ -5798,7 +5798,7 @@ How the system is laid out and run in production.
 
 **Quick check:** (1) Customer DB has a public IP and accepts internet connections: what's wrong, where should it sit? (2) Build server hacked, malicious code ships in a properly signed update: attack + why signing didn't stop it?
 
-**Answer:** Named defenses (separation of duties, protected branches) instead of the attack: SUPPLY CHAIN / CI/CD compromise (SolarWinds); code added before signing so signature genuine; branches do not help when the build server itself is changed. Marked shaky.
+**Answer:** I named defenses (separation of duties, protected branches) instead of the attack: SUPPLY CHAIN / CI/CD compromise (SolarWinds); code added before signing so signature genuine; branches do not help when the build server itself is changed. Marked shaky.
 
 </details>
 

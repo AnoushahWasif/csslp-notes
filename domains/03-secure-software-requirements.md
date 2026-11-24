@@ -52,7 +52,7 @@ Don't confuse: functional = a behavior; non-functional = a quality like performa
 
 **Quick check:** (1) log every failed admin login with timestamp + IP (2) login page loads under 2 seconds: which is functional?
 
-**Answer:** User said both; reasoning for #1 correct. #2 is NON-FUNCTIONAL (performance, how well). Remove-it test.
+**Answer:** I said both; reasoning for #1 correct. #2 is NON-FUNCTIONAL (performance, how well). Remove-it test.
 
 </details>
 
@@ -720,7 +720,7 @@ Kids' data → COPPA · financial **customers'** data → GLBA · government sys
 
 **Quick check:** Match: (1) math game for 8-year-olds collects emails (2) insurer must create written plan to protect customer financial data (3) fired employee logs into server with old password. Re-check: hacker breaks into hospital (which law makes the break-in a crime?); credit union must tell members how data is shared + opt out.
 
-**Answer:** User: COPPA, FISMA, SOX (1/3). Correct: COPPA, GLBA Safeguards Rule, CFAA. Re-check: HIPAA (wrong, CFAA) and GLBA (correct, Privacy Rule). Taught: duty-on-company laws vs CFAA punishes the attacker. Marked shaky.
+**Answer:** My answer: COPPA, FISMA, SOX (1/3). Correct: COPPA, GLBA Safeguards Rule, CFAA. Re-check: HIPAA (wrong, CFAA) and GLBA (correct, Privacy Rule). Taught: duty-on-company laws vs CFAA punishes the attacker. Marked shaky.
 
 </details>
 
@@ -1285,7 +1285,7 @@ Government: **"Top Secret Spies Carry Umbrellas"** (TS, S, C, U). Commercial: **
 
 **Quick check:** (1) C=Moderate, I=Low, A=High overall? (2) unreleased product designs commercial label? (3) serious damage to national security?
 
-**Answer:** User: unreleased designs = Private (wrong: Confidential, company secret); serious damage = Top Secret (wrong: Secret). Re-check: exceptionally grave = Top Secret, employee addresses + salaries = Private, both correct. Marked shaky.
+**Answer:** My answer: unreleased designs = Private (wrong: Confidential, company secret); serious damage = Top Secret (wrong: Secret). Re-check: exceptionally grave = Top Secret, employee addresses + salaries = Private, both correct. Marked shaky.
 
 </details>
 
@@ -2141,7 +2141,7 @@ Cross-border: **Residency = where it sleeps. Sovereignty = whose rules it lives 
 
 **Quick check:** (1) Purge job cleans main DB only; backups kept indefinitely. Problem? (2) German company, US-owned cloud, Frankfurt DC: which concept explains US law reaching the data?
 
-**Answer:** Said laws apply where data is stored (would point to German law); missed the twist + term: SOVEREIGNTY can follow the US-owned provider (CLOUD Act). Pre-test Q8 SCCs correct. Marked shaky.
+**Answer:** I said laws apply where data is stored (would point to German law); missed the twist + term: SOVEREIGNTY can follow the US-owned provider (CLOUD Act). Pre-test Q8 SCCs correct. Marked shaky.
 
 </details>
 
@@ -2657,7 +2657,7 @@ Attacker's **goal** at the **root**, branches = all the ways to reach it.
 
 **Quick check:** (1) Nurse accidentally views wrong patient record: misuse or abuse? (2) What should come out of every misuse case?
 
-**Answer:** Said "security patches". Output is a security REQUIREMENT / mitigating control (requirements phase, before code); patches come after release. Marked shaky.
+**Answer:** I said "security patches". Output is a security REQUIREMENT / mitigating control (requirements phase, before code); patches come after release. Marked shaky.
 
 </details>
 
@@ -2822,7 +2822,7 @@ Proving every requirement got built and tested, and nothing extra sneaked in.
 
 **Quick check:** Unrequested "export all users to CSV" button added by a developer to be helpful: name, which traceability direction caught it?
 
-**Answer:** Did not name the direction: BACKWARD (feature → requirement) catches extras; forward catches missed requirements. Marked shaky.
+**Answer:** I did not name the direction: BACKWARD (feature → requirement) catches extras; forward catches missed requirements. Marked shaky.
 
 </details>
 

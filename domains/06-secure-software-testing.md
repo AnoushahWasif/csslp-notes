@@ -3247,7 +3247,7 @@ Weakest → strongest: **function** · **statement/line** · **branch/decision**
 
 **Quick check:** (1) Fuzzer knows PNG structure, plants deep errors: type + drawback? (2) Robot purchase every 5 min in prod with alerts: name? (3) Cut authz service to check app denies access: what testing?
 
-**Answer:** Answered the principle (fail secure) instead of the technique (fault injection). Shaky.
+**Answer:** I answered the principle (fail secure) instead of the technique (fault injection). Shaky.
 
 </details>
 
@@ -4151,7 +4151,7 @@ Input validation (malformed, boundary) · injection (`'` `"` `;` `--`) · script
 
 **Quick check:** (1) Changed account ID → another customer's statements: horizontal or vertical? (2) Age 18–65: which boundary values? (3) Test reproducing a fixed SQLi on every build: name?
 
-**Answer:** Named the technique, not the values (17, 18, 65, 66). Shaky.
+**Answer:** I named the technique, not the values (17, 18, 65, 66). Shaky.
 
 </details>
 
@@ -7212,7 +7212,7 @@ Verify an AI agent **can't act outside its allowed scope** — negative testing 
 
 **Quick check:** (1) Trick AI support agent into refunds above its limit: testing type? (2) Long input pushes safety instructions out of context: test + control? (3) NIST AI RMF four functions in order?
 
-**Answer:** Said unbounded consumption; answer agent scope testing. Shaky.
+**Answer:** I said unbounded consumption; answer agent scope testing. Shaky.
 
 </details>
 
@@ -7261,7 +7261,7 @@ Verify an AI agent **can't act outside its allowed scope** — negative testing 
 
 **Quick check:** (1) Trick AI support agent into refunds above its limit: testing type? (2) Long input pushes safety instructions out of context: test + control? (3) NIST AI RMF four functions in order?
 
-**Answer:** Named correctly; control not given. Shaky.
+**Answer:** I named correctly; control not given. Shaky.
 
 </details>
 
